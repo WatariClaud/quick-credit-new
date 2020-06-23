@@ -6,6 +6,7 @@ const userModel = require('../models/users.models');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.post('/create-user', (req, res) => {
     const { name, email, phone, password } = req.body;
     if(!name) return res.status(409).json({ error: 'Name is required' });
@@ -39,13 +40,30 @@ app.post('/create-user', (req, res) => {
         };
         const token = jwt.sign({email: email, phone: phone}, 'secret_key', {expiresIn: '7 days'});
         userModel.push(user);
-        res.status(200).json({ 
+        res.status(201).json({ 
             success: 'User added successfully',
             token: token,
             user: user
         });
     });
 });
+
+app.post('/login-user', (req, res) => {
+    const { email, phone, password } = req.body;
+    if(!email && !phone) return res.status(409).json({ error: 'Credentials required' });
+    if(!password) return res.json({ error: 'Password required' });
+
+    try{
+        var validUser = userModel.find((user) => {
+            console.log(user);
+            return  user.Password === password && user.Email === email || user.Phone === phone;
+        })
+    } catch(e) {throw e;}
+    if(!validUser) return res.status(400).json({ error: 'Invalid user' });
+    const token = jwt.sign({email: email, phone,  phone}, 'secret_key', { expiresIn: '14 Days' })
+    return res.status(200).json({ success: 'Valid token created', token: token });
+});
+
 app.get('/users', (req, res) => {
     const validUsers = [];
     userModel.forEach((user) => {

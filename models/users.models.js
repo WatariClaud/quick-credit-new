@@ -3,7 +3,7 @@ const userModel = [
         id: 1,
         Name: 'Claud Watari',
         Email: 'claudwatari95@gmail.com',
-        Password: 'mypassword',
+        Password: '$2b$12$3Kc4bZccBtX0ADAyvg6VFeReLO5E9KlhheIlOVAvOEbdEaNqukAvC',
         Phone: '+254 705 724562',
         Total: 90000,
         Paid: 10000,
